@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  db:
+    container_name: zfr_postgres
+    image: qaprosoft/postgres:9.6
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+      - ./database/:/docker-entrypoint-initdb.d
+    ports:
+      - 5433:5432
+    env_file:
+      - integrations.env
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    restart: always
