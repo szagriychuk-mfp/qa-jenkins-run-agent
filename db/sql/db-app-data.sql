@@ -1,4 +1,4 @@
-SET SCHEMA 'zafira';
+SET SCHEMA 'jagent';
 
 INSERT INTO RQ_STATUSES (STATUS) VALUES 
 	('NEW'),
