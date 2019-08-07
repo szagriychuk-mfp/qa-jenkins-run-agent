@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+ "http://mybatis.org/dtd/mybatis-3-config.dtd">
+ 
+<configuration>
+
+	<properties resource="db.properties" />
+
+	<settings>
+		<setting name="useGeneratedKeys" value="true" />
+	</settings>
+
+	<typeAliases>
+		<typeAlias alias="JobRequest" type="com.qaprosoft.jagent.db.domain.JobRequest" />
+		<typeAlias alias="Job" type="com.qaprosoft.jagent.db.domain.Job" />
+	</typeAliases>
+	
+	
+	<environments default="default">
+		<environment id="default">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="${default.driver}" />
+				<property name="url" value="${default.url}" />
+				<property name="username" value="${default.user}" />
+				<property name="password" value="${default.pass}" />
+			</dataSource>
+		</environment>
+	</environments>
+
+	<mappers>
+		<mapper resource="db/JobsQueueMapper.xml" />
+	</mappers>
+
+</configuration>

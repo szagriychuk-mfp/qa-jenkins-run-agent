@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mappers">
+
+	<resultMap id="jobRqResultMap" type="JobRequest">
+		<result property="jobName" column="job_name" />
+		<result property="jobStatus" column="status" />
+		<result property="jobParams" column="params" />
+		<result property="createdAt" column="created_at" />
+	</resultMap>
+	
+	<resultMap id="job" type="JobRequest">
+		<result property="jobName" column="job_name" />
+	</resultMap>
+
+	<select id="getNewJobRequests" resultMap="jobRqResultMap">
+		SELECT r.id, j.job_name, st.status, r.params, r.created_at FROM runs r
+		JOIN rq_statuses st ON r.status_id = st.id
+		JOIN jobs j ON r.job_id = j.id
+		WHERE st.status = 'NEW'
+	</select>
+
+	<insert id="addNewRun" parameterType="JobRequest">
+		INSERT INTO runs (
+		job_id,
+		status_id,
+		params) VALUES
+		((SELECT j.id from jobs j where #{rq.jobName} = j.job_name),
+		(SELECT st.id from rq_statuses st where #{rq.jobStatus} = st.status),
+		#{rq.jobParams})
+	</insert>
+	
+	<insert id="updateRunStatus">
+		UPDATE runs
+		SET status_id = (SELECT st.id from rq_statuses st where #{runStatus} = st.status)
+		WHERE id = #{runId}
+	</insert>
+	
+	<insert id="addJob" parameterType="Job">
+		INSERT INTO jobs (job_name, project_name) VALUES (#{job.jobName}, #{job.projectName})
+	</insert>
+
+</mapper>
