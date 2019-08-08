@@ -15,3 +15,17 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     restart: always
+  rest:
+    container_name: rest
+    image: tomcat:8.0
+#    volumes:
+#      - ./pgdata:/var/lib/postgresql/data
+#      - ./db/:/docker-entrypoint-initdb.d
+    ports:
+      - 8888:8080
+    env_file:
+      - integrations.env
+#    environment:
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=postgres
+    restart: always
