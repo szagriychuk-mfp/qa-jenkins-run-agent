@@ -4,9 +4,12 @@
 <mapper namespace="mappers">
 
 	<resultMap id="jobRqResultMap" type="JobRequest">
+		<result property="runId" column="id" />
+		<result property="projectName" column="project_name" />
 		<result property="jobName" column="job_name" />
 		<result property="jobStatus" column="status" />
 		<result property="jobParams" column="params" />
+		<result property="ciRunId" column="ci_run_id" />
 		<result property="createdAt" column="created_at" />
 	</resultMap>
 	
@@ -15,10 +18,17 @@
 	</resultMap>
 
 	<select id="getNewJobRequests" resultMap="jobRqResultMap">
-		SELECT r.id, j.job_name, st.status, r.params, r.created_at FROM runs r
+		SELECT r.id, j.job_name, j.project_name, st.status, r.params, r.created_at, r.ci_run_id FROM runs r
 		JOIN rq_statuses st ON r.status_id = st.id
 		JOIN jobs j ON r.job_id = j.id
 		WHERE st.status = 'NEW'
+	</select>
+	
+	<select id="getJobRequestsInProgress" resultMap="jobRqResultMap">
+		SELECT r.id, j.job_name, j.project_name, st.status, r.params, r.created_at, r.ci_run_id FROM runs r
+		JOIN rq_statuses st ON r.status_id = st.id
+		JOIN jobs j ON r.job_id = j.id
+		WHERE st.status = 'IN_PROGRESS'
 	</select>
 
 	<insert id="addNewRun" parameterType="JobRequest">
@@ -34,6 +44,13 @@
 	<insert id="updateRunStatus">
 		UPDATE runs
 		SET status_id = (SELECT st.id from rq_statuses st where #{runStatus} = st.status)
+		WHERE id = #{runId}
+	</insert>
+	
+	<insert id="updateRunStatusAndCiRunId">
+		UPDATE runs
+		SET status_id = (SELECT st.id from rq_statuses st where #{runStatus} = st.status),
+		ci_run_id = ${ciRunId}
 		WHERE id = #{runId}
 	</insert>
 	

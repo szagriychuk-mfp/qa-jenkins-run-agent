@@ -32,6 +32,18 @@ public class JobsQueueDAO {
 		return rqs;
 	}
 	
+	public List<JobRequest> getJobRequestsInProgress() {
+		List<JobRequest> rqs = null;
+		final SqlSession session = sf.openSession();
+		try {
+			final String query = NAMESPACE + ".getJobRequestsInProgress";
+			rqs = session.selectList(query);
+		} finally {
+			session.close();
+		}
+		return rqs;
+	}
+
 	public void addNewRun(JobRequest jobRequest) {
 		final SqlSession session = sf.openSession();
 		try {
@@ -65,6 +77,21 @@ public class JobsQueueDAO {
 			Map<String, Object> args = new HashMap<String, Object>();
 			args.put("runId", runId);
 			args.put("runStatus", runStatus.toString());
+			session.update(query, args);
+			session.commit();
+		} finally {
+			session.close();
+		}
+	}
+
+	public void updateRunStatusAndCiRunId(Long runId, RunStatus runStatus, int ciRunId) {
+		final SqlSession session = sf.openSession();
+		try {
+			final String query = NAMESPACE + ".updateRunStatusAndCiRunId";
+			Map<String, Object> args = new HashMap<String, Object>();
+			args.put("runId", runId);
+			args.put("runStatus", runStatus.toString());
+			args.put("ciRunId", ciRunId);
 			session.update(query, args);
 			session.commit();
 		} finally {

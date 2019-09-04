@@ -6,11 +6,15 @@ public class JobRequest {
 
 	private String runId;
 
+	private String projectName;
+
 	private String jobName;
 
 	private String jobStatus;
 
 	private String jobParams;
+
+	private String ciRunId;
 
 	private Date createdAt;
 
@@ -62,6 +66,22 @@ public class JobRequest {
 
 	public void setRunId(String runId) {
 		this.runId = runId;
+	}
+
+	public String getCiRunId() {
+		return ciRunId;
+	}
+
+	public void setCiRunId(String ciRunId) {
+		this.ciRunId = ciRunId;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
 	}
 
 	@Override
